@@ -4,6 +4,8 @@ import { getPokemon, getPokemons } from './servie'
 import PokemonList from './Components/PokemonList'
 import Start from './Components/Start'
 
+// AGREGO RAMA DEVELOP PARA REALIZAR MEJORAS Y ACTUALIZACIONES DEL JUEGO
+
 const getRandomNum = (max) => {
   if (max > 0) {
     return Math.floor(Math.random() * max)
