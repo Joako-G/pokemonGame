@@ -3,16 +3,10 @@ import './App.css'
 import { getPokemon, getPokemons } from './servie'
 import PokemonList from './Components/PokemonList'
 import Start from './Components/Start'
+import { getRandomNum } from './Logic/RamdomNum'
+import { mezclarPokemons } from './Logic/MixPokemon'
 
 // AGREGO RAMA DEVELOP PARA REALIZAR MEJORAS Y ACTUALIZACIONES DEL JUEGO
-
-const getRandomNum = (max) => {
-  if (max > 0) {
-    return Math.floor(Math.random() * max)
-  }
-
-  return null
-}
 
 function App () {
   // Para almacenar el nombre del pokemon a adivinar
@@ -21,9 +15,7 @@ function App () {
 
   // Para guardar todos los pokemons de la API
   const [pokemons, setPokemons] = useState([])
-
-  // Array para almacenar los pokemons elegidos para adivinar
-  const [pokemonSelected, setPokemonSelected] = useState([])
+  const [index, setIndex] = useState(0)
 
   // Pokemons para el juego
   const [pokemonsIngGame, setPokemonsInGame] = useState([])
@@ -31,22 +23,26 @@ function App () {
   // Para iniciar el juego
   const [inGame, setInGame] = useState(false)
   const [continuee, setContinue] = useState(false)
-  const [guessedPokemon, setGuessedPokemon] = useState('')
+  const [guessedPokemon, setGuessedPokemon] = useState(null)
 
   // INICIO DEL JUEGO
+  /* En esta parte se llama a la API para traer una lista de pokemon */
   useEffect(() => {
     getPokemons()
       .then(data => {
         setPokemons(data.results)
-        setPokemon(data.results[getRandomNum(data.results.length)])
+        // setPokemon(data.results[index])
       })
       .catch(err => console.log('Error', err))
   }, [])
 
   // LOGICA DEL JUEGO
 
-  // Agrego pokemons a una lista que sera mostrada en pantalla
-  // Despues mezclo el arreglo para cambiar el orden de los pokemons
+  /*
+    Agrego el pokemon a una lista y completo con 4 pokemons mas,
+    luego mezclo la lista anterior para mostrar las opciones al jugador
+    No hay pokemons repetidos
+  */
   const mixPokenon = (pokemon) => {
     const uniquePokemons = new Set()
     uniquePokemons.add(pokemon)
@@ -55,47 +51,13 @@ function App () {
       const randomIndex = getRandomNum(pokemons.length)
       uniquePokemons.add(pokemons[randomIndex])
     }
-    const array = Array.from(uniquePokemons)
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]]
-    }
+
+    const array = mezclarPokemons(Array.from(uniquePokemons))
 
     setPokemonsInGame(array)
-    /* const aux = [pokemon]
-    for (let i = 1; i < 5; i++) {
-      let p = pokemons[getRandomNum(pokemons.length)]
-      if (aux.length > 0) {
-        for (let j = 0; j <= aux.length - 1; j++) {
-          if (aux[j].name === p.name || aux[j] === pokemon.name) {
-            j = 0
-            p = pokemons[getRandomNum(pokemons.length)]
-          }
-        }
-      }
-      aux[i] = p
-    }
-
-    for (let i = aux.length - 1; i > 2; i--) {
-      const ramdom = getRandomNum(aux.length)
-      const actual = aux[i]
-      if (aux[ramdom].name !== actual.name) {
-        aux[i] = aux[ramdom]
-        aux[ramdom] = actual
-      }
-    }
-
-    setPokemonsInGame(aux) */
   }
 
-  const startGame = () => {
-    // Agrego pokemon a una lista para despues no volver a elegirlo
-    setPokemonSelected(pokemon)
-    setInGame(true)
-    mixPokenon(pokemon)
-    getImgPokemon(pokemon)
-  }
-
+  /* Meotodo para obtener la imagen del pokemon a adivinar */
   const getImgPokemon = (p) => {
     getPokemon(p.url)
       .then(data => {
@@ -104,19 +66,47 @@ function App () {
       .catch(err => console.log('Error', err))
   }
 
-  const checkName = (name) => {
-    if (name === pokemon.name) {
-      console.log('WINNER')
-      setGuessedPokemon(pokemon.name)
-      setContinue(true)
-      const newPokemon = pokemons[getRandomNum(pokemons.length)]
-      setPokemon(newPokemon)
-    }
+  /**
+   * dsad
+   */
+  const startGame = () => {
+    // MEZCLO EL ARRAY DE POKEMONS DE LA API
+    const newArray = mezclarPokemons(pokemons)
+    setPokemons(newArray)
+
+    // SELECCIONO EL PRIMER POKEMON PARA ADIVINAR MENDIANTE LA VARIABLE INDEX
+    const newPokemon = pokemons[index]
+    setPokemon(newPokemon) // Pokemon a adivinar
+    mixPokenon(newPokemon) // Mezclar la lista
+    getImgPokemon(newPokemon) // Obtiene la imagen del pokemon
+    setInGame(true) // Para iniciar el juego
   }
 
+  /**
+   * Funcion que verifica si el usuario adivino el nombre del pokemon.
+   * Recibe por parametro el nombre del pokemon seleccionado por el
+   * jugador
+   * @param {*} name
+   */
+  const checkName = (name) => {
+    setGuessedPokemon(pokemon.name)
+
+    if (name === pokemon.name) {
+      console.log('WINNER')
+    }
+    const newIndex = index + 1
+    setIndex((prev) => prev + 1)
+    setContinue(true)
+    const newPokemon = pokemons[newIndex]
+    setPokemon(newPokemon)
+  }
+
+  /**
+   * Metodo para pasar a la siguiente ronda
+   */
   const continueGame = () => {
     getImgPokemon(pokemon)
-    setGuessedPokemon('')
+    setGuessedPokemon(null)
     mixPokenon(pokemon)
     setContinue(false)
   }
