@@ -4,7 +4,7 @@ const Pokemon = ({ name, checkName, guessedPokemon }) => {
   }
 
   return (
-    <button disabled={guessedPokemon !== null} style={{ background: guessedPokemon === name ? 'green' : guessedPokemon ? 'red' : '' }} onClick={handleClick}> {name} </button>
+    <button className='pokemons' disabled={guessedPokemon !== null} style={{ background: guessedPokemon === name ? 'green' : guessedPokemon ? 'red' : '' }} onClick={handleClick}> {name} </button>
   )
 }
 

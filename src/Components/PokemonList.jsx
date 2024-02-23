@@ -1,10 +1,10 @@
 import Pokemon from './Pokemon'
 
-const PokemonList = ({ pokemons, checkName, guessedPokemon }) => {
+const PokemonList = ({ pokemonsInGame, checkName, guessedPokemon }) => {
   return (
     <div className='buttons-pokemons'>
       {
-      pokemons.map((pok) => (
+      pokemonsInGame.map((pok) => (
         <Pokemon key={pok.name} name={pok.name} checkName={checkName} guessedPokemon={guessedPokemon} />
       ))
     }

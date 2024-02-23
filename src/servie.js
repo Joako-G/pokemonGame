@@ -12,6 +12,18 @@ export const getPokemons = async () => {
   }
 }
 
+export const getNextPage = async (url) => {
+  try {
+    const response = await fetch(`${url}`)
+    if (!response.ok) {
+      throw new Error('Error')
+    }
+    return response.json()
+  } catch (error) {
+    throw new Error('Error en la peticion')
+  }
+}
+
 export const getPokemon = async (url) => {
   try {
     const response = await fetch(`${url}`)
