@@ -3,12 +3,13 @@
   flex-direction: column;
   align-items: center;
   margin: 10px;
+  padding: 5px;
 }
 
 
 .start-game .image {
   margin: 25px 0 25px 0;
-  height: 50vh;
+  width: 80%;
 }
 
 button {
@@ -16,13 +17,13 @@ button {
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: bold;
+  font-size: 20px;
   font-family: inherit;
   background-color: white;
   cursor: pointer;
   transition: border-color 0.25s;
   margin: 15px;
-  width: 10vw;
 }
 
 button:hover {
