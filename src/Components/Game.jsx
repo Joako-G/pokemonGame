@@ -104,7 +104,7 @@ const Game = ({ pokemons, data, setDatos }) => {
 
     getNextPage(next)
       .then(data => {
-        const newList = data.results
+        const newList = mezclarPokemons(data.results)
         setPokemonsList(newList)
         const newAmount = data.results.length
         setAmount(newAmount)

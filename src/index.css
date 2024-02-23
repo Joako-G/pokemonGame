@@ -8,7 +8,7 @@
 
 .start-game .image {
   margin: 25px 0 25px 0;
-  height: 40vw;
+  height: 50vh;
 }
 
 button {
@@ -22,7 +22,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
   margin: 15px;
-  width: 80vw;
+  width: 10vw;
 }
 
 button:hover {
@@ -37,7 +37,7 @@ button:hover {
   align-items: center;
   justify-content: center;
   margin: 30px 0 0 0;
-  width: 70vw;
+  width: 70%;
   padding: 20px;
   text-align: center;
   border: 3px solid #6d6767;
@@ -45,8 +45,8 @@ button:hover {
 }
 
 .game img {
-  height: auto;
-  width: 40vw;
+  height: 80%;
+  width: 70%;
 }
 
 .buttons-pokemons {
@@ -55,7 +55,8 @@ button:hover {
 }
 
 .pokemons {
-  width: 20vh;
+  width: 25vh;
+  font-weight: bold;
 }
 
 .siguiente {
