@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
+import { getPokemon } from '../servie'
+import { MixPokemonsInGame } from '../Logic/MixPokemonInGame'
 import PokemonList from './PokemonList'
 import WinnerModal from './WinnerModal'
-import { usePokemons } from '../Hooks/usePokemons'
-import { mixPokemonsInGame } from '../Logic/MixPokemonInGame'
-import { usePokemonImage } from '../Hooks/usePokemonImage'
+import { usePokemons } from './Hooks/usePokemons'
 
 const Game = () => {
+  const [index, setIndex] = useState(0) // Para recorrer la lista de pokemons de la API
+  const [pokemon, setPokemon] = useState(null) // Pokemon para adivinar
+  const [imgPokemon, setImgPokemon] = useState('') // Imagen del pokemon
   const [pokemonsIngGame, setPokemonsInGame] = useState([]) // Lista de pokemons para el juego(4)
   const [guessedPokemon, setGuessedPokemon] = useState(null) // Pokemon elegido por el jugador
 
@@ -19,16 +22,22 @@ const Game = () => {
   /* NUEVO CODIGO */
   const { pokemonsList, amount, nextPage, refreshPokemons, refreshAmount } = usePokemons()
 
-  const { imgPokemon, pokemon, refreshIndex, index } = usePokemonImage({ pokemons: pokemonsList })
-
   useEffect(() => {
     setIsLoading(true)
+    if (!pokemonsList) return
 
-    if (pokemonsList && pokemonsList.length > 0 && pokemon) {
-      const newList = mixPokemonsInGame(pokemon, pokemonsList)
-      setPokemonsInGame(newList)
+    const newPokemon = pokemonsList[index]
+    if (newPokemon) {
+      // console.log('Index:', pokemonsList.indexOf(newPokemon))
+      setPokemon(newPokemon)
+      setPokemonsInGame(MixPokemonsInGame(newPokemon, pokemonsList))
+      getPokemon(newPokemon.url)
+        .then(data => {
+          setImgPokemon(data.sprites.other.home.front_default)
+        })
+        .catch(err => console.log('Error: ', err))
     }
-  }, [pokemonsList, pokemon])
+  }, [pokemonsList, index])
 
   useEffect(() => {
     if (gameOver) {
@@ -40,10 +49,16 @@ const Game = () => {
     if (isLoading) {
       const timer = setTimeout(() => {
         setIsLoading(false)
-      }, 1000)
+      }, 800)
       return () => clearInterval(timer)
     }
   }, [gameOver, isLoading])
+
+  /*
+    Agrego el pokemon a una lista y completo con 4 pokemons mas,
+    luego mezclo la lista anterior para mostrar las opciones al jugador
+    No hay pokemons repetidos
+  */
 
   /**
    * Funcion que verifica si el usuario adivino el nombre del pokemon.
@@ -52,7 +67,7 @@ const Game = () => {
    * @param {*} name
    */
   const checkName = (name) => {
-    if (index === pokemonsList.length - 1) {
+    if (index === 2) {
       setGameOver(true)
     }
     setGuessedPokemon(pokemon.name)
@@ -70,11 +85,13 @@ const Game = () => {
    * Metodo para pasar a la siguiente ronda
    */
   const continueGame = () => {
-    setGuessedPokemon(null)
-    setSiguiente(false)
+    setImgPokemon('')
+    const newIndex = index + 1
+    setIndex(newIndex)
 
     refreshAmount()
-    refreshIndex()
+    setGuessedPokemon(null)
+    setSiguiente(false)
   }
 
   const nextGame = () => {
@@ -82,9 +99,9 @@ const Game = () => {
     setGuessedPokemon(null)
     setSiguiente(false)
     setShowModal(false)
-    refreshPokemons(nextPage)
-    refreshIndex()
+    setIndex(0)
     setGuessedAmount(0)
+    refreshPokemons(nextPage)
   }
 
   return (

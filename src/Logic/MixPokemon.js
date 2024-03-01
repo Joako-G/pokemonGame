@@ -3,7 +3,7 @@
  * @param {*} array
  * @returns Una lista mezclada
  */
-export const mezclarPokemons = (array) => {
+export const mixPokemons = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]]
