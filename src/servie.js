@@ -8,9 +8,10 @@ export const getPokemons = async (url) => {
       throw new Error('Error')
     }
     const { results, next } = await response.json()
+
     return { results, next }
   } catch (error) {
-    throw new Error('Errero get pokemons')
+    throw new Error('Error get pokemons: ', error)
   }
 }
 
@@ -20,7 +21,15 @@ export const getPokemon = async (url) => {
     if (!response.ok) {
       throw new Error('Error')
     }
-    return response.json()
+
+    const json = await response.json()
+
+    const newPokemon = {
+      name: json.name,
+      img: json.sprites.other.home.front_default
+    }
+
+    return newPokemon
   } catch (error) {
     throw new Error('Error get Pokemon')
   }
