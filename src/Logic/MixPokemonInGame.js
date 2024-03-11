@@ -6,7 +6,7 @@ export const mixPokemonsInGame = (pokemon, pokemonsList) => {
   uniquePokemons.add(pokemon)
   while (uniquePokemons.size < 5) {
     const randomIndex = getRandomNum(pokemonsList.length)
-    uniquePokemons.add(pokemonsList[randomIndex])
+    if (pokemonsList[randomIndex].name !== pokemon.name) uniquePokemons.add(pokemonsList[randomIndex])
   }
   const array = mixPokemons(Array.from(uniquePokemons))
   return array
