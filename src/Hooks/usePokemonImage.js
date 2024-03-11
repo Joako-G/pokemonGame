@@ -2,23 +2,18 @@ import { useEffect, useState } from 'react'
 import { getPokemon } from '../servie'
 
 export function usePokemonImage ({ pokemons }) {
-  const [imgPokemon, setImgPokemon] = useState('') // Imagen del pokemon
   const [pokemon, setPokemon] = useState({})
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
     if (!pokemons[index]) return
 
-    const newPokemon = pokemons[index]
-    setPokemon(newPokemon)
-
-    getPokemon(newPokemon.url)
+    getPokemon(pokemons[index].url)
       .then(data => {
-        setImgPokemon(data.sprites.other.home.front_default)
+        const newPokemon = data
+        setPokemon(newPokemon)
       })
       .catch(err => console.log('Error: ', err))
-
-    setPokemon(newPokemon)
   }, [pokemons, index])
 
   const refreshIndex = () => {
@@ -27,5 +22,5 @@ export function usePokemonImage ({ pokemons }) {
     } else setIndex(0)
   }
 
-  return { imgPokemon, pokemon, refreshIndex, index }
+  return { pokemon, refreshIndex, index }
 }

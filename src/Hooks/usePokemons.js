@@ -8,6 +8,7 @@ export function usePokemons () {
   const [nextPage, setNextPage] = useState('')
 
   const refreshPokemons = (currentPage = 'https://pokeapi.co/api/v2/pokemon') => {
+    console.log('UsePokemons')
     if (!pokemonsList) return
     getPokemons(currentPage)
       .then(data => {
@@ -16,7 +17,7 @@ export function usePokemons () {
         setAmount(newList.length)
         setNextPage(data.next)
       })
-      .catch(err => console.log('Error: ', err))
+      .catch(err => console.log(err))
   }
 
   const refreshAmount = () => {
